@@ -17,14 +17,18 @@ The related product work is [Planerix ChatIX](https://github.com/aistrategyc/ais
 
 ```mermaid
 flowchart LR
-  Q["Question + workspace"] --> S["Search candidates"]
-  S --> V["Recheck current membership + source version"]
-  V --> G["Generator: read-only context"]
-  G --> C["Validate citations + recheck sources"]
-  C --> A["Answer"]
-  A -. "Separate user action" .-> P["Proposed task"]
-  P --> U["User confirms"]
-  U --> T["Revalidate + create task atomically"]
+  subgraph R["Answer"]
+    direction TB
+    Q["Question + scoped search"] --> V["Membership + source checks"]
+    V --> G["Read-only generator"]
+    G --> C["Citations + final access check"]
+  end
+  subgraph W["Reviewed action"]
+    direction TB
+    P["Inert task proposal"] --> U["User confirms"]
+    U --> T["Revalidate + create one task"]
+  end
+  R -. "Separate request" .-> W
 ```
 
 ## Run it
